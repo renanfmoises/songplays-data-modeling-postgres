@@ -86,16 +86,34 @@ time_table_create = create_if_not_exists.format(
 insert_into = """INSERT INTO {} VALUES {};"""
 
 songplay_table_insert = insert_into.format(
-    "songplays", "(%s, %s, %s, %s, %s, %s, %s, %s)"
+    """songplays (
+            start_time,
+            user_id,
+            level,
+            song_id,
+            artist_id,
+            session_id,
+            location,
+            user_agent)""",
+    "(%s, %s, %s, %s, %s)",
 )
 
-user_table_insert = insert_into.format("users", "(%s, %s, %s, %s, %s)")
+user_table_insert = insert_into.format(
+    "users (user_id, first_name, last_name, gender, level)", "(%s, %s, %s, %s, %s)"
+)
 
-song_table_insert = insert_into.format("songs", "(%s, %s, %s, %s, %s)")
+song_table_insert = insert_into.format(
+    "songs (song_id, title, artist_id, year, duration)", "(%s, %s, %s, %s, %s)"
+)
 
-artist_table_insert = insert_into.format("artists", "(%s, %s, %s, %s, %s)")
+artist_table_insert = insert_into.format(
+    "artists (artist_id, name, location, latitude, longitude) ", "(%s, %s, %s, %s, %s)"
+)
 
-time_table_insert = insert_into.format("time", "(%s, %s, %s, %s, %s, %s, %s)")
+time_table_insert = insert_into.format(
+    "time (start_time, hour, day, week, month, year, weekday)",
+    "(%s, %s, %s, %s, %s, %s, %s)",
+)
 
 # FIND SONGS
 
