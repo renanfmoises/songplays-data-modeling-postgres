@@ -16,16 +16,15 @@ create_if_not_exists = """CREATE TABLE IF NOT EXISTS {};"""
 songplay_table_create = create_if_not_exists.format(
     """
                                     songplays (
-                                        songplay_id SERIAL PRIMARY KEY,
-                                        start_time TIMESTAMP NOT NULL,
-                                        user_id INT NOT NULL,
+                                        songplay_id VARCHAR,
+                                        start_time VARCHAR NOT NULL,
+                                        user_id VARCHAR NOT NULL,
                                         level VARCHAR,
-                                        song_id INT NOT NULL,
-                                        artist_id INT NOT NULL,
-                                        session_id INT NOT NULL,
+                                        song_id VARCHAR NOT NULL,
+                                        artist_id VARCHAR NOT NULL,
+                                        session_id VARCHAR NOT NULL,
                                         location VARCHAR,
-                                        user_agent VARCHAR
-                                    )
+                                        user_agent VARCHAR)
                                 """
 )
 
@@ -34,51 +33,48 @@ songplay_table_create = create_if_not_exists.format(
 user_table_create = create_if_not_exists.format(
     """
                                     users (
-                                        user_id INT PRIMARY KEY,
+                                        user_id VARCHAR,
                                         first_name VARCHAR,
                                         last_name VARCHAR,
                                         gender VARCHAR,
-                                        level VARCHAR
-                                    )
+                                        level VARCHAR)
                                 """
 )
 
 song_table_create = create_if_not_exists.format(
     """
                                     songs (
-                                        song_id INT PRIMARY KEY,
+                                        song_id VARCHAR,
                                         title VARCHAR,
-                                        artist_id INT NOT NULL,
+                                        artist_id VARCHAR NOT NULL,
                                         year INT,
-                                        duration NUMERIC NOT NULL
-                                        )
+                                        duration NUMERIC NOT NULL)
                                 """
 )
 
 artist_table_create = create_if_not_exists.format(
     """
                                     artists (
-                                        artist_id INT PRIMARY KEY,
+                                        artist_id VARCHAR,
                                         name VARCHAR,
                                         location VARCHAR,
                                         latitude NUMERIC,
-                                        longitude NUMERIC
-                                        )
+                                        longitude NUMERIC)
                                 """
 )
 
 time_table_create = create_if_not_exists.format(
     """
                                 time (
-                                    songplay_id INT FOREIGN KEY,
-                                    start_time TIMESTAMP,
-                                    hour TIMESTAMP,
+                                    start_time VARCHAR,
+                                    hour INT,
                                     day INT,
                                     week INT,
                                     month INT,
                                     year INT,
-                                    )
-                                """
+                                    weekday INT
+                                )
+                            """
 )
 
 # INSERT RECORDS
@@ -118,7 +114,9 @@ time_table_insert = insert_into.format(
 # FIND SONGS
 
 song_select = """
-    SELECT * FROM songplays WHERE songplay_id = %s;
+    SELECT songs.song_id, songs.title, artists.artists_id, artists.name, songs.duration
+    FROM songs
+    INNER JOIN artists ON songs.artist_id = artists.artist_id
     """
 
 # QUERY LISTS
@@ -130,6 +128,7 @@ create_table_queries = [
     artist_table_create,
     time_table_create,
 ]
+
 drop_table_queries = [
     songplay_table_drop,
     user_table_drop,
