@@ -1,5 +1,6 @@
 import psycopg2
 from sql_queries import create_table_queries, drop_table_queries
+from hidden import CREDENTIALS
 
 
 def create_database():
@@ -9,7 +10,9 @@ def create_database():
     """
 
     # connect to default database
-    conn = psycopg2.connect("host=localhost dbname=renan user=renan port=5008")
+    conn = psycopg2.connect(
+        "host={} dbname={} user={} port={}".format(*CREDENTIALS.values())
+    )
 
     conn.set_session(autocommit=True)
     cur = conn.cursor()
@@ -22,7 +25,12 @@ def create_database():
     conn.close()
 
     # connect to sparkify database
-    conn = psycopg2.connect("host=localhost dbname=sparkifydb user=renan port=5008")
+    conn = psycopg2.connect(
+        "host={} dbname=sparkifydb user={} port={}".format(
+            CREDENTIALS["host"], CREDENTIALS["user"], CREDENTIALS["port"]
+        )
+    )
+
     cur = conn.cursor()
 
     return cur, conn
