@@ -13,16 +13,16 @@ time_table_drop = drop_if_exists.format("time")
 create_if_not_exists = """CREATE TABLE IF NOT EXISTS {};"""
 
 # Creating the fact table "songplays"
+
 songplay_table_create = create_if_not_exists.format(
     """
                                     songplays (
-                                        songplay_id VARCHAR,
-                                        start_time VARCHAR NOT NULL,
-                                        user_id VARCHAR NOT NULL,
+                                        start_time TIMESTAMP,
+                                        user_id VARCHAR,
                                         level VARCHAR,
-                                        song_id VARCHAR NOT NULL,
-                                        artist_id VARCHAR NOT NULL,
-                                        session_id VARCHAR NOT NULL,
+                                        song_id VARCHAR,
+                                        artist_id VARCHAR,
+                                        session_id VARCHAR,
                                         location VARCHAR,
                                         user_agent VARCHAR)
                                 """
@@ -91,8 +91,9 @@ songplay_table_insert = insert_into.format(
             session_id,
             location,
             user_agent)""",
-    "(%s, %s, %s, %s, %s)",
+    "(%s, %s, %s, %s, %s, %s, %s, %s)",
 )
+
 
 user_table_insert = insert_into.format(
     "users (user_id, first_name, last_name, gender, level)", "(%s, %s, %s, %s, %s)"
@@ -114,10 +115,16 @@ time_table_insert = insert_into.format(
 # FIND SONGS
 
 song_select = """
-    SELECT songs.song_id, songs.title, artists.artists_id, artists.name, songs.duration
+    SELECT songs.song_id, artists.artist_id
     FROM songs
-    INNER JOIN artists ON songs.artist_id = artists.artist_id
-    """
+    JOIN artists ON songs.artist_id = artists.artist_id
+"""
+
+# song_select = """
+#     SELECT sp.start_time, sp.user_id, sp.level, sp.song_id, sp.artist_id, sp.session_id, sp.location, sp.user_agent
+#     FROM songplays sp
+#     WHERE sp.song_id == {} AND sp.artist_id == {};
+# """
 
 # QUERY LISTS
 
