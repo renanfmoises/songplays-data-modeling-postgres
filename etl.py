@@ -58,7 +58,7 @@ def process_log_file(cur, filepath):
 
     # insert time data records
     time_data = (
-        t.dt.time,
+        t,
         t.dt.hour,
         t.dt.day,
         t.dt.week,
