@@ -13,72 +13,74 @@ time_table_drop = drop_if_exists.format("time")
 create_if_not_exists = """CREATE TABLE IF NOT EXISTS {};"""
 
 # Creating the fact table "songplays"
-
 songplay_table_create = create_if_not_exists.format(
     """
                                     songplays (
-                                        start_time TIMESTAMP,
-                                        user_id VARCHAR,
-                                        level VARCHAR,
-                                        song_id VARCHAR,
-                                        artist_id VARCHAR,
-                                        session_id VARCHAR,
-                                        location VARCHAR,
-                                        user_agent VARCHAR)
+                                        songplay_id SERIAL PRIMARY KEY,
+                                        start_time TIMESTAMP NOT NULL,
+                                        user_id VARCHAR NOT NULL,
+                                        level VARCHAR NOT NULL,
+                                        song_id VARCHAR NOT NULL,
+                                        artist_id VARCHAR NOT NULL,
+                                        session_id VARCHAR NOT NULL,
+                                        location VARCHAR NOT NULL,
+                                        user_agent VARCHAR NOT NULL
+                                        )
                                 """
 )
 
 # Creating the dimension tables users, songs, artists, time
-
 user_table_create = create_if_not_exists.format(
     """
                                     users (
-                                        user_id VARCHAR,
-                                        first_name VARCHAR,
-                                        last_name VARCHAR,
-                                        gender VARCHAR,
-                                        level VARCHAR)
+                                        user_id VARCHAR PRIMARY KEY,
+                                        first_name VARCHAR NOT NULL,
+                                        last_name VARCHAR NOT NULL,
+                                        gender VARCHAR NOT NULL,
+                                        level VARCHAR NOT NULL
+                                    )
                                 """
 )
 
 song_table_create = create_if_not_exists.format(
     """
                                     songs (
-                                        song_id VARCHAR,
-                                        title VARCHAR,
+                                        song_id VARCHAR PRIMARY KEY,
+                                        title VARCHAR NOT NULL,
                                         artist_id VARCHAR NOT NULL,
-                                        year INT,
-                                        duration NUMERIC NOT NULL)
+                                        year INT NOT NULL,
+                                        duration NUMERIC NOT NULL
+                                    )
                                 """
 )
 
 artist_table_create = create_if_not_exists.format(
     """
                                     artists (
-                                        artist_id VARCHAR,
-                                        name VARCHAR,
-                                        location VARCHAR,
-                                        latitude NUMERIC,
-                                        longitude NUMERIC)
+                                        artist_id VARCHAR PRIMARY KEY,
+                                        name VARCHAR NOT NULL,
+                                        location VARCHAR NOT NULL,
+                                        latitude NUMERIC NOT NULL,
+                                        longitude NUMERIC NOT NULL
+                                    )
                                 """
 )
 
 time_table_create = create_if_not_exists.format(
     """
                                 time (
-                                    start_time VARCHAR,
-                                    hour INT,
-                                    day INT,
-                                    week INT,
-                                    month INT,
-                                    year INT,
-                                    weekday INT
+                                    start_time TIMESTAMP PRIMARY KEY,
+                                    hour INT NOT NULL,
+                                    day INT NOT NULL,
+                                    week INT NOT NULL,
+                                    month INT NOT NULL,
+                                    year INT NOT NULL,
+                                    weekday INT NOT NULL
                                 )
                             """
 )
 
 # INSERT RECORDS
-
 insert_into = """INSERT INTO {} VALUES {};"""
 
 songplay_table_insert = insert_into.format(
@@ -91,25 +93,28 @@ songplay_table_insert = insert_into.format(
             session_id,
             location,
             user_agent)""",
-    "(%s, %s, %s, %s, %s, %s, %s, %s)",
+    """(%s, %s, %s, %s, %s, %s, %s, %s) ON CONFLICT (songplay_id) DO NOTHING;""",
 )
 
 
 user_table_insert = insert_into.format(
-    "users (user_id, first_name, last_name, gender, level)", "(%s, %s, %s, %s, %s)"
+    "users (user_id, first_name, last_name, gender, level)",
+    "(%s, %s, %s, %s, %s) ON CONFLICT (level) DO UPDATE SET level = EXCLUDED.level;",
 )
 
 song_table_insert = insert_into.format(
-    "songs (song_id, title, artist_id, year, duration)", "(%s, %s, %s, %s, %s)"
+    "songs (song_id, title, artist_id, year, duration)",
+    "(%s, %s, %s, %s, %s) ON CONFLICT (song_id) DO NOTHING;",
 )
 
 artist_table_insert = insert_into.format(
-    "artists (artist_id, name, location, latitude, longitude) ", "(%s, %s, %s, %s, %s)"
+    "artists (artist_id, name, location, latitude, longitude) ",
+    "(%s, %s, %s, %s, %s) ON CONFLICT (artist_id) DO NOTHING;",
 )
 
 time_table_insert = insert_into.format(
     "time (start_time, hour, day, week, month, year, weekday)",
-    "(%s, %s, %s, %s, %s, %s, %s)",
+    "(%s, %s, %s, %s, %s, %s, %s) ON CONFLICT (start_time) DO NOTHING;",
 )
 
 # FIND SONGS
@@ -119,12 +124,6 @@ song_select = """
     FROM songs
     JOIN artists ON songs.artist_id = artists.artist_id
 """
-
-# song_select = """
-#     SELECT sp.start_time, sp.user_id, sp.level, sp.song_id, sp.artist_id, sp.session_id, sp.location, sp.user_agent
-#     FROM songplays sp
-#     WHERE sp.song_id == {} AND sp.artist_id == {};
-# """
 
 # QUERY LISTS
 
