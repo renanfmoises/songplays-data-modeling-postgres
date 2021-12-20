@@ -17,14 +17,14 @@ songplay_table_create = create_if_not_exists.format(
     """
                                     songplays (
                                         songplay_id SERIAL PRIMARY KEY,
-                                        start_time TIMESTAMP NOT NULL,
-                                        user_id VARCHAR NOT NULL,
-                                        level VARCHAR NOT NULL,
+                                        start_time TIMESTAMP,
+                                        user_id VARCHAR,
+                                        level VARCHAR,
                                         song_id VARCHAR NOT NULL,
                                         artist_id VARCHAR NOT NULL,
-                                        session_id VARCHAR NOT NULL,
-                                        location VARCHAR NOT NULL,
-                                        user_agent VARCHAR NOT NULL
+                                        session_id VARCHAR,
+                                        location VARCHAR,
+                                        user_agent VARCHAR
                                         )
                                 """
 )
@@ -99,7 +99,7 @@ songplay_table_insert = insert_into.format(
 
 user_table_insert = insert_into.format(
     "users (user_id, first_name, last_name, gender, level)",
-    "(%s, %s, %s, %s, %s) ON CONFLICT (level) DO UPDATE SET level = EXCLUDED.level;",
+    "(%s, %s, %s, %s, %s) ON CONFLICT (user_id) DO UPDATE SET level = EXCLUDED.level;",
 )
 
 song_table_insert = insert_into.format(
