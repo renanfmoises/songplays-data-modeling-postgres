@@ -1,4 +1,7 @@
 
+<picture>
+    <img src="/repo/img/data-modeling-and-etl.png" width="900">
+</picture>
 
 # Simple Data Modeling and ETL with Postgres and Python
 
